@@ -15,14 +15,23 @@ class FeedViewModel @Inject constructor(
     private val getFeed: GetFeed
 ) : ViewModel() {
 
-    val feed  = MutableLiveData<List<Article>>()
+    private val _feed : MutableLiveData<List<Article>> = MutableLiveData()
+    val feed : MutableLiveData<List<Article>>
+        get() = _feed
+
+    private val _feedLoading : MutableLiveData<Boolean> = MutableLiveData()
+    val feedLoading : MutableLiveData<Boolean>
+        get() = _feedLoading
 
     init {
         getFeed()
     }
-    private fun getFeed() {
+
+    fun getFeed(forceRefresh: Boolean = false) {
         viewModelScope.launch {
+            _feedLoading.postValue(true)
             getFeed.invoke().collect {
+                _feedLoading.postValue(false)
                 feed.value = it
             }
         }
