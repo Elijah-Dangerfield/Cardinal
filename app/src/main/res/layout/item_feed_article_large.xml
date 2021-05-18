@@ -58,13 +58,13 @@
 
         <TextView
             android:id="@+id/articlePublisher"
-            android:layout_width="0dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
+            android:ellipsize="end"
+            android:maxEms="10"
             android:text="TextView"
             android:textSize="12sp"
-            app:layout_constraintEnd_toStartOf="@+id/articleDate"
-            app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toStartOf="@+id/articlePreview"
             app:layout_constraintTop_toBottomOf="@+id/articlePreview" />
 
@@ -72,11 +72,11 @@
             android:id="@+id/articleDate"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
             android:text="TextView"
             android:textSize="12sp"
             app:layout_constraintBottom_toBottomOf="@+id/articlePublisher"
             app:layout_constraintEnd_toStartOf="@+id/articleActionsContainer"
-            app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toEndOf="@+id/articlePublisher"
             app:layout_constraintTop_toTopOf="@+id/articlePublisher" />
 

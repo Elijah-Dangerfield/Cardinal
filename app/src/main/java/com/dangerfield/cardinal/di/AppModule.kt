@@ -1,10 +1,12 @@
 package com.dangerfield.cardinal.di
 
+import com.dangerfield.cardinal.data.network.mapper.CategoryNetworkEntityMapper
 import com.dangerfield.cardinal.data.network.mapper.TopHeadlineNetworkEntityMapper
 import com.dangerfield.cardinal.data.network.service.NewsApiService
 import com.dangerfield.cardinal.data.repository.ArticleRepositoryImpl
 import com.dangerfield.cardinal.domain.repository.ArticleRepository
 import com.dangerfield.cardinal.domain.usecase.GetFeed
+import com.dangerfield.cardinal.domain.usecase.GetUsersCategories
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import dagger.Module
@@ -48,8 +50,14 @@ object AppModule {
 
     @Singleton
     @Provides
-    fun providesGetFeedUseCase(repository: ArticleRepository) : GetFeed {
-        return GetFeed(repository)
+    fun providesGetFeedUseCase(repository: ArticleRepository, getUsersCategories: GetUsersCategories) : GetFeed {
+        return GetFeed(getUsersCategories, repository)
+    }
+
+    @Singleton
+    @Provides
+    fun providesGetUsersCategoriesUseCase() : GetUsersCategories {
+        return GetUsersCategories()
     }
 
     @Singleton
@@ -57,9 +65,11 @@ object AppModule {
     fun providesArticleRepository(
         topHeadlinesNetworkEntityMapper: TopHeadlineNetworkEntityMapper,
         newsApiService: NewsApiService,
+        categoryNetworkEntityMapper: CategoryNetworkEntityMapper
     ): ArticleRepository {
         return ArticleRepositoryImpl(
             newsApiService,
-            topHeadlinesNetworkEntityMapper)
+            topHeadlinesNetworkEntityMapper,
+            categoryNetworkEntityMapper)
     }
 }

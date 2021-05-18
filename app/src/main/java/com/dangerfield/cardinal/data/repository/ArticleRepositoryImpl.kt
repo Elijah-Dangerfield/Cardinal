@@ -1,5 +1,6 @@
 package com.dangerfield.cardinal.data.repository
 
+import com.dangerfield.cardinal.data.network.mapper.CategoryNetworkEntityMapper
 import com.dangerfield.cardinal.data.network.mapper.TopHeadlineNetworkEntityMapper
 import com.dangerfield.cardinal.data.network.service.NewsApiService
 import com.dangerfield.cardinal.domain.model.Article
@@ -9,7 +10,8 @@ import kotlinx.coroutines.flow.Flow
 
 class ArticleRepositoryImpl(
     private val articlesService: NewsApiService,
-    private val topHeadlinesNetworkEntityMapper: TopHeadlineNetworkEntityMapper
+    private val topHeadlinesNetworkEntityMapper: TopHeadlineNetworkEntityMapper,
+    private val categoryNetworkEntityMapper: CategoryNetworkEntityMapper
 ) : ArticleRepository {
 
     override suspend fun fetchNewTopHeadlinesGeneral(): List<Article> {
@@ -18,7 +20,11 @@ class ArticleRepositoryImpl(
     }
 
     override suspend fun fetchNewTopHeadlinesForCategory(category: Category): List<Article> {
-        TODO("Not yet implemented")
+        return topHeadlinesNetworkEntityMapper
+            .mapFromEntity(
+                articlesService
+                    .getTopHeadlinesCategory(categoryNetworkEntityMapper.mapFromEntity(category))
+            )
     }
 
     override suspend fun fetchNewEverythingForCatoegy(category: Category): List<Article> {
