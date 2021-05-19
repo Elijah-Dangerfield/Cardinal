@@ -8,7 +8,7 @@ interface ArticleRepository {
     //building feed
     suspend fun fetchNewTopHeadlinesGeneral() : List<Article>
     suspend fun fetchNewTopHeadlinesForCategory(category: Category) : List<Article>
-    suspend fun fetchNewEverythingForCatoegy(category: Category) : List<Article>
+    suspend fun fetchNewEverythingForCategory(category: Category) : List<Article>
 
     //getting feed
     suspend fun fetchCachedFeed() : Flow<List<Article>>

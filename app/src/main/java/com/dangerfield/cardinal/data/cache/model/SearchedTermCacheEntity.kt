@@ -7,6 +7,6 @@ import kotlinx.android.parcel.Parcelize
 
 @Entity(tableName = "SEARCHED_TERM")
 @Parcelize
-data class SearchTermCacheEntity(@PrimaryKey val value: String): Parcelable {
+data class SearchedTermCacheEntity(@PrimaryKey val value: String): Parcelable {
     constructor() : this("")
 }

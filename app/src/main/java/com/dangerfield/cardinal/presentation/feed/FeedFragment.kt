@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.dangerfield.cardinal.R
 import com.dangerfield.cardinal.databinding.FragmentFeedBinding
 import com.dangerfield.cardinal.domain.model.Article
+import com.dangerfield.cardinal.domain.util.GenericError
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.GroupieViewHolder
 import dagger.hilt.android.AndroidEntryPoint
@@ -46,6 +47,14 @@ class FeedFragment : Fragment(R.layout.fragment_feed) {
         viewModel.feedLoading.observe(viewLifecycleOwner, {
             showFeedLoading(it)
         })
+
+        viewModel.feedError.observe(viewLifecycleOwner, {
+            handleError(it)
+        })
+    }
+
+    private fun handleError(it: GenericError) {
+        Toast.makeText(context, "Got an error", Toast.LENGTH_SHORT).show()
     }
 
     private fun setupView() {
