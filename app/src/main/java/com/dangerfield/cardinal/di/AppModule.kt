@@ -15,6 +15,7 @@ import com.dangerfield.cardinal.domain.repository.ArticleRepository
 import com.dangerfield.cardinal.domain.usecase.GetFeed
 import com.dangerfield.cardinal.domain.usecase.GetUsersCategories
 import com.dangerfield.cardinal.domain.usecase.HasUserSelectedCategories
+import com.dangerfield.cardinal.domain.usecase.SetUsersCategories
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import dagger.Module
@@ -98,6 +99,12 @@ object AppModule {
     @Provides
     fun providesHasUserSelectedCategoriesUseCase(): HasUserSelectedCategories {
         return HasUserSelectedCategories()
+    }
+
+    @Singleton
+    @Provides
+    fun providesSetUserCategoriesUseCase(): SetUsersCategories {
+        return SetUsersCategories()
     }
 
     @Singleton

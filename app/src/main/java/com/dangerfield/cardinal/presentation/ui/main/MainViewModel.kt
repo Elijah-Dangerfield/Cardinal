@@ -1,4 +1,4 @@
-package com.dangerfield.cardinal.presentation
+package com.dangerfield.cardinal.presentation.ui.main
 
 import androidx.lifecycle.ViewModel
 import com.dangerfield.cardinal.domain.usecase.HasUserSelectedCategories

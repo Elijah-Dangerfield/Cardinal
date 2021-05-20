@@ -7,11 +7,13 @@
     android:elevation="4dp"
     app:cardCornerRadius="9dp"
     android:layout_margin="4dp"
+    android:stateListAnimator="@animator/bounce_selector"
     app:cardElevation="4dp">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        >
 
         <ImageView
             android:id="@+id/categoryImage"
@@ -22,6 +24,38 @@
             app:layout_constraintTop_toTopOf="parent"
             tools:srcCompat="@tools:sample/avatars" />
 
+        <FrameLayout
+            android:id="@+id/selected_cover"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="@+id/categoryImage"
+            app:layout_constraintEnd_toEndOf="@+id/categoryImage"
+            app:layout_constraintStart_toStartOf="@+id/categoryImage"
+            app:layout_constraintTop_toTopOf="@+id/categoryImage"
+            >
+
+            <View
+                android:id="@+id/tint"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@color/red_200"
+                android:alpha="0.8"
+                app:layout_constraintBottom_toBottomOf="@+id/categoryImage"
+                app:layout_constraintEnd_toEndOf="@+id/categoryImage"
+                app:layout_constraintStart_toStartOf="@+id/categoryImage"
+                app:layout_constraintTop_toTopOf="@+id/categoryImage" />
+
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:src="@drawable/ic_checkmark"
+                android:layout_margin="16dp"
+                />
+
+        </FrameLayout>
+
+
         <TextView
             android:id="@+id/categoryTitle"
             android:layout_width="wrap_content"
@@ -30,6 +64,7 @@
             android:layout_marginEnd="16dp"
             android:textSize="16sp"
             android:textStyle="bold"
+            tools:text="Technology"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/categoryImage"

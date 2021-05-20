@@ -1,26 +1,23 @@
-package com.dangerfield.cardinal.presentation.feed
+package com.dangerfield.cardinal.presentation.ui.feed
 
 import android.view.View
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.dangerfield.cardinal.R
-import com.dangerfield.cardinal.databinding.ItemFeedArticleSmallBinding
+import com.dangerfield.cardinal.databinding.ItemFeedArticleLargeBinding
 import com.dangerfield.cardinal.domain.model.Article
-import com.dangerfield.cardinal.presentation.util.visibleIf
 import com.xwray.groupie.viewbinding.BindableItem
 import java.text.ParseException
 import java.text.SimpleDateFormat
 import java.util.*
 
-class FeedArticleItemSmall(val data: Article) : BindableItem<ItemFeedArticleSmallBinding>() {
-    override fun bind(viewBinding: ItemFeedArticleSmallBinding, position: Int) {
+class FeedArticleItemLarge(val data: Article) : BindableItem<ItemFeedArticleLargeBinding>() {
+    override fun bind(viewBinding: ItemFeedArticleLargeBinding, position: Int) {
         viewBinding.apply {
             articleTitle.text = data.title ?: "Untitled"
-            articlePublishDate.text = data.publishedAt?.toReadableDate() ?: "No date"
+            articleDate.text = data.publishedAt?.toReadableDate() ?: "No date"
             articlePublisher.text = data.source?.name
             articlePreview.text = data.description ?: "Click to read more"
-
-            imageCard.visibleIf(data.urlToImage != null)
 
             data.urlToImage?.let {
                 Glide.with(articleImage.context)
@@ -33,11 +30,11 @@ class FeedArticleItemSmall(val data: Article) : BindableItem<ItemFeedArticleSmal
     }
 
     override fun getLayout(): Int {
-        return R.layout.item_feed_article_small
+        return R.layout.item_feed_article_large
     }
 
-    override fun initializeViewBinding(view: View): ItemFeedArticleSmallBinding {
-        return ItemFeedArticleSmallBinding.bind(view)
+    override fun initializeViewBinding(view: View): ItemFeedArticleLargeBinding {
+        return ItemFeedArticleLargeBinding.bind(view)
     }
 
     /**

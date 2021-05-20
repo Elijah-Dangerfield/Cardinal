@@ -1,10 +1,9 @@
-package com.dangerfield.cardinal.presentation
+package com.dangerfield.cardinal.presentation.ui.main
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import androidx.activity.viewModels
 import androidx.navigation.Navigation
-import androidx.navigation.findNavController
 import com.dangerfield.cardinal.R
 import dagger.hilt.android.AndroidEntryPoint
 

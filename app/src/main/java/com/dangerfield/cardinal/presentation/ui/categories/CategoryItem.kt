@@ -1,4 +1,4 @@
-package com.dangerfield.cardinal.presentation.categories
+package com.dangerfield.cardinal.presentation.ui.categories
 
 import android.view.View
 import com.bumptech.glide.Glide
@@ -6,13 +6,16 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.dangerfield.cardinal.R
 import com.dangerfield.cardinal.databinding.ItemCategoryBinding
 import com.dangerfield.cardinal.domain.model.Category
+import com.dangerfield.cardinal.presentation.model.CategoryPresentationEntity
+import com.dangerfield.cardinal.presentation.util.goneIf
 import com.xwray.groupie.viewbinding.BindableItem
 
-class CategoryItem(val data: Category) : BindableItem<ItemCategoryBinding>() {
-    override fun bind(viewBinding: ItemCategoryBinding, position: Int) {
+class CategoryItem(val data: CategoryPresentationEntity) : BindableItem<ItemCategoryBinding>() {
 
+    override fun bind(viewBinding: ItemCategoryBinding, position: Int) {
         viewBinding.apply {
             categoryTitle.text = data.title
+            selectedCover.goneIf(!data.isSelected)
 
             Glide.with(categoryImage.context)
                 .load(data.url)
@@ -20,6 +23,7 @@ class CategoryItem(val data: Category) : BindableItem<ItemCategoryBinding>() {
                 .diskCacheStrategy(DiskCacheStrategy.AUTOMATIC)
                 .into(categoryImage)
         }
+
     }
 
     override fun getLayout(): Int {

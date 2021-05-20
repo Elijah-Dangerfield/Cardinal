@@ -1,22 +1,23 @@
-package com.dangerfield.cardinal.presentation.categories
+package com.dangerfield.cardinal.presentation.ui.categories
 
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
+import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.navigation.fragment.findNavController
 import com.dangerfield.cardinal.R
 import com.dangerfield.cardinal.databinding.FragmentCategoriesBinding
-import com.dangerfield.cardinal.databinding.FragmentFeedBinding
-import com.dangerfield.cardinal.domain.model.Category
-import com.dangerfield.cardinal.presentation.feed.FeedArticleItemSmall
 import com.dangerfield.cardinal.presentation.util.OscillatingScrollListener
 import com.dangerfield.cardinal.presentation.util.smoothScrollToPositionWithSpeed
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.GroupieViewHolder
+import dagger.hilt.android.AndroidEntryPoint
 
+
+@AndroidEntryPoint
 class CategoriesFragment : Fragment() {
 
     private val viewModel: CategoriesViewModel by viewModels()
@@ -34,22 +35,46 @@ class CategoriesFragment : Fragment() {
         return binding.root
     }
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+        val callback: OnBackPressedCallback =
+            object : OnBackPressedCallback(true) {
+                override fun handleOnBackPressed() {
+                    //do nothing depending on where you came from
+                }
+            }
+        requireActivity().onBackPressedDispatcher.addCallback(this, callback)
+    }
+
     private fun setupView() {
         binding.rvCategories.apply {
             setHasFixedSize(true)
             adapter = groupAdapter
+            itemAnimator = null // fixes items shifting around
             smoothScrollToPositionWithSpeed(viewModel.categories.size)
             addOnScrollListener(
                 OscillatingScrollListener(resources.getDimensionPixelSize(R.dimen.grid_2))
             )
         }
         groupAdapter.setOnItemClickListener { item, view ->
-            val bundle = Bundle()
-            (item as? CategoryItem)?.let {
-                Toast.makeText(context, "CLICK", Toast.LENGTH_SHORT).show()
+            (item as? CategoryItem)?.data?.apply {
+                toggleSelected()
+                if(isSelected) {
+                   viewModel.addSelectedCategory(this)
+                } else {
+                    viewModel.removeSelectedCategory(this)
+                }
             }
+            item.notifyChanged()
         }
+
         groupAdapter.update(viewModel.categories.map { CategoryItem(it) }.reversed())
+
+        binding.btnNext.setOnClickListener {
+            viewModel.saveCurrentUserCategories()
+            findNavController().navigateUp()
+        }
     }
 
 
@@ -59,5 +84,17 @@ class CategoriesFragment : Fragment() {
     }
 
     private fun setupObservers() {
+        viewModel.buttonState.observe(viewLifecycleOwner) { state ->
+            binding.btnNext.text = when(state) {
+                CategoriesViewModel.ButtonState.Next -> getString(R.string.next)
+                CategoriesViewModel.ButtonState.Skip,
+                null -> getString(R.string.skip)
+            }
+        }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        _binding = null
     }
 }

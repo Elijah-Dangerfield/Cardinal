@@ -1,4 +1,4 @@
-package com.dangerfield.cardinal.presentation.feed
+package com.dangerfield.cardinal.presentation.ui.feed
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
