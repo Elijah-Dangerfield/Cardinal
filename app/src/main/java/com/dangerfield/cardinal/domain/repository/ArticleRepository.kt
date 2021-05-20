@@ -6,12 +6,12 @@ import kotlinx.coroutines.flow.Flow
 
 interface ArticleRepository {
     //building feed
-    suspend fun fetchNewTopHeadlinesGeneral() : List<Article>
-    suspend fun fetchNewTopHeadlinesForCategory(category: Category) : List<Article>
-    suspend fun fetchNewEverythingForCategory(category: Category) : List<Article>
+    suspend fun fetchTopHeadlinesGeneral() : List<Article>
+    suspend fun fetchTopHeadlinesForCategory(category: Category) : List<Article>
+    suspend fun fetchEverythingForCategory(category: Category) : List<Article>
 
     //getting feed
-    suspend fun fetchCachedFeed() : Flow<List<Article>>
+    suspend fun getCachedFeed() : Flow<List<Article>>
 
     //updating feed
     suspend fun replaceCachedFeed(articles: List<Article>)

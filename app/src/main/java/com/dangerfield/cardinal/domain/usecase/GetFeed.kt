@@ -12,6 +12,12 @@ import com.dangerfield.cardinal.domain.util.Resource
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.*
 
+/**
+ * The feed is built from: top headlines for every category the user is subscribed to as well as
+ * the general top headlines. Sorted by publish date
+ * TODO add pagination, when we run out, start using queries from the everything endpoint with categories
+ * TODO add blacklist checking
+ */
 class GetFeed(
     private val getUsersCategories: GetUsersCategories,
     private val articleRepository: ArticleRepository,
@@ -19,22 +25,12 @@ class GetFeed(
     private val networkCallWrapper: NetworkCallWrapper,
     private val cacheCallWrapper: CacheCallWrapper,
     private val dispatcher: CoroutineDispatcher = Dispatchers.IO,
-
     ) {
     private val requestKey = "FEED_REQUEST"
     private val requestTimeout = 3000L
 
-    /*
-    Feed is built from:
-    - All of the top headlines for users subscribed categories
-    - Just the general top headlines
-    - sorted by publish date (eventually also adding weight to most interacted categories and publishers)
-    - when pagination is added: start adding queries from the everything endpoint when we run out of top headlines
-    - eventually also add blacklisting
-     */
     fun invoke(): Flow<Resource<List<Article>, GenericError>> =
         flow {
-            //get cached feed
             val cachedFeed = getCachedFeed()
             if (shouldFetchNewFeed(cachedFeed)) {
                 val loading: Resource<List<Article>, GenericError> = Resource.Loading(cachedFeed)
@@ -81,13 +77,13 @@ class GetFeed(
 
     private suspend fun getCachedFeed(): List<Article> {
         return cacheCallWrapper.safeCacheCall(dispatcher) {
-            articleRepository.fetchCachedFeed().first()
+            articleRepository.getCachedFeed().first()
         }.cacheData ?: listOf()
     }
 
     private suspend fun getCachedFeedFlow(): Flow<List<Article>> {
         return cacheCallWrapper.safeCacheCall(dispatcher) {
-            articleRepository.fetchCachedFeed()
+            articleRepository.getCachedFeed()
         }.cacheData ?: flowOf(listOf())
     }
 
@@ -98,12 +94,12 @@ class GetFeed(
             categories.map { category ->
                 async {
                     networkCallWrapper.safeNetworkCall(dispatcher, requestTimeout) {
-                        articleRepository.fetchNewTopHeadlinesForCategory(category)
+                        articleRepository.fetchTopHeadlinesForCategory(category)
                     }
                 }
             } + async {
                 networkCallWrapper.safeNetworkCall(dispatcher, requestTimeout) {
-                    articleRepository.fetchNewTopHeadlinesGeneral()
+                    articleRepository.fetchTopHeadlinesGeneral()
                 }
             }
         }

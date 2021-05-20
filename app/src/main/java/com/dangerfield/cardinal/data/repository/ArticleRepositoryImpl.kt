@@ -19,12 +19,12 @@ class ArticleRepositoryImpl(
     private val feedItemCacheEntityMapper: FeedItemCacheEntityMapper
 ) : ArticleRepository {
 
-    override suspend fun fetchNewTopHeadlinesGeneral(): List<Article> {
+    override suspend fun fetchTopHeadlinesGeneral(): List<Article> {
         val result = articlesService.getTopHeadlinesGeneral()
         return topHeadlinesNetworkEntityMapper.mapFromEntity(result)
     }
 
-    override suspend fun fetchNewTopHeadlinesForCategory(category: Category): List<Article> {
+    override suspend fun fetchTopHeadlinesForCategory(category: Category): List<Article> {
         return topHeadlinesNetworkEntityMapper
             .mapFromEntity(
                 articlesService
@@ -32,11 +32,11 @@ class ArticleRepositoryImpl(
             )
     }
 
-    override suspend fun fetchNewEverythingForCategory(category: Category): List<Article> {
+    override suspend fun fetchEverythingForCategory(category: Category): List<Article> {
         TODO("Not yet implemented")
     }
 
-    override suspend fun fetchCachedFeed(): Flow<List<Article>> {
+    override suspend fun getCachedFeed(): Flow<List<Article>> {
         return mainDao.getCachedFeed().map { articles ->
             articles.map { feedItemCacheEntityMapper.mapFromEntity(it)}
         }
