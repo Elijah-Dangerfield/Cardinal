@@ -2,4 +2,8 @@
     <string name="app_name">Cardinal</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="choose_topics_that_interest_you">Choose Topics That Interest You</string>
+    <string name="skip">Skip</string>
+    <string name="next">Next</string>
+
 </resources>

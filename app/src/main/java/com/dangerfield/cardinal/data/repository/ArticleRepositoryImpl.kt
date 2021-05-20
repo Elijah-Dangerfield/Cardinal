@@ -2,7 +2,6 @@ package com.dangerfield.cardinal.data.repository
 
 import com.dangerfield.cardinal.data.cache.mapper.FeedItemCacheEntityMapper
 import com.dangerfield.cardinal.data.cache.service.MainDao
-import com.dangerfield.cardinal.data.network.mapper.CategoryNetworkEntityMapper
 import com.dangerfield.cardinal.data.network.mapper.TopHeadlineNetworkEntityMapper
 import com.dangerfield.cardinal.data.network.service.NewsApiService
 import com.dangerfield.cardinal.domain.model.Article
@@ -15,7 +14,6 @@ class ArticleRepositoryImpl(
     private val articlesService: NewsApiService,
     private val mainDao: MainDao,
     private val topHeadlinesNetworkEntityMapper: TopHeadlineNetworkEntityMapper,
-    private val categoryNetworkEntityMapper: CategoryNetworkEntityMapper,
     private val feedItemCacheEntityMapper: FeedItemCacheEntityMapper
 ) : ArticleRepository {
 
@@ -28,7 +26,7 @@ class ArticleRepositoryImpl(
         return topHeadlinesNetworkEntityMapper
             .mapFromEntity(
                 articlesService
-                    .getTopHeadlinesCategory(categoryNetworkEntityMapper.mapFromEntity(category))
+                    .getTopHeadlinesCategory(category.title)
             )
     }
 
@@ -38,7 +36,7 @@ class ArticleRepositoryImpl(
 
     override suspend fun getCachedFeed(): Flow<List<Article>> {
         return mainDao.getCachedFeed().map { articles ->
-            articles.map { feedItemCacheEntityMapper.mapFromEntity(it)}
+            articles.map { feedItemCacheEntityMapper.mapFromEntity(it) }
         }
     }
 

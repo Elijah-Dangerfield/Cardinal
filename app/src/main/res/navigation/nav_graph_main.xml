@@ -10,4 +10,9 @@
         android:name="com.dangerfield.cardinal.presentation.feed.FeedFragment"
         android:label="fragment_feed"
         tools:layout="@layout/fragment_feed" />
+    <fragment
+        android:id="@+id/categoriesFragment"
+        android:name="com.dangerfield.cardinal.presentation.categories.CategoriesFragment"
+        android:label="fragment_categories"
+        tools:layout="@layout/fragment_categories" />
 </navigation>

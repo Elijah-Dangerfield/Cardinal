@@ -17,11 +17,11 @@ import com.xwray.groupie.GroupieViewHolder
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
-class FeedFragment : Fragment(R.layout.fragment_feed) {
+class FeedFragment : Fragment() {
 
-    private val viewModel : FeedViewModel by viewModels()
-
-    private lateinit var binding : FragmentFeedBinding
+    private val viewModel: FeedViewModel by viewModels()
+    private var _binding: FragmentFeedBinding? = null
+    private val binding get() = _binding!!
     private val adapter = GroupAdapter<GroupieViewHolder>()
 
     override fun onCreateView(
@@ -29,7 +29,7 @@ class FeedFragment : Fragment(R.layout.fragment_feed) {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        binding = FragmentFeedBinding.inflate(inflater, container, false)
+        _binding = FragmentFeedBinding.inflate(inflater, container, false)
         setupView()
         return binding.root
     }
@@ -68,31 +68,37 @@ class FeedFragment : Fragment(R.layout.fragment_feed) {
         adapter.setOnItemClickListener { item, view ->
             val bundle = Bundle()
             (item as? FeedArticleItemSmall)?.let {
-               Toast.makeText(context, "CLICK",Toast.LENGTH_SHORT).show()
+                Toast.makeText(context, "CLICK", Toast.LENGTH_SHORT).show()
             }
         }
     }
 
     private fun setupRefresher() {
-        binding.swipeRefreshLayout.setColorSchemeResources( R.color.black, android.R.color.holo_blue_light
-            , android.R.color.holo_blue_dark)
+        binding.swipeRefreshLayout.setColorSchemeResources(
+            R.color.black, android.R.color.holo_blue_light, android.R.color.holo_blue_dark
+        )
 
         binding.swipeRefreshLayout.setOnRefreshListener { viewModel.getFeed(forceRefresh = true) }
     }
 
     private fun updateFeed(articles: List<Article>) {
         val views = articles.map {
-           if((0..10).random() > 6) {
-               FeedArticleItemLarge(it)
-           }else {
-               FeedArticleItemSmall(it)
-           }
+            if ((0..10).random() > 6) {
+                FeedArticleItemLarge(it)
+            } else {
+                FeedArticleItemSmall(it)
+            }
         }
         adapter.update(views)
     }
 
     private fun showFeedLoading(loading: Boolean) {
         binding.swipeRefreshLayout.isRefreshing = loading
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        _binding = null
     }
 
 }

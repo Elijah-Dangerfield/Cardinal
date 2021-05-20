@@ -5,7 +5,6 @@ import androidx.room.Room
 import com.dangerfield.cardinal.data.cache.mapper.FeedItemCacheEntityMapper
 import com.dangerfield.cardinal.data.cache.service.CardinalDatabase
 import com.dangerfield.cardinal.data.cache.service.MainDao
-import com.dangerfield.cardinal.data.network.mapper.CategoryNetworkEntityMapper
 import com.dangerfield.cardinal.data.network.mapper.TopHeadlineNetworkEntityMapper
 import com.dangerfield.cardinal.data.network.service.NewsApiService
 import com.dangerfield.cardinal.data.repository.ArticleRepositoryImpl
@@ -15,6 +14,7 @@ import com.dangerfield.cardinal.data.util.RateLimiterImpl
 import com.dangerfield.cardinal.domain.repository.ArticleRepository
 import com.dangerfield.cardinal.domain.usecase.GetFeed
 import com.dangerfield.cardinal.domain.usecase.GetUsersCategories
+import com.dangerfield.cardinal.domain.usecase.HasUserSelectedCategories
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import dagger.Module
@@ -96,10 +96,15 @@ object AppModule {
 
     @Singleton
     @Provides
+    fun providesHasUserSelectedCategoriesUseCase(): HasUserSelectedCategories {
+        return HasUserSelectedCategories()
+    }
+
+    @Singleton
+    @Provides
     fun providesArticleRepository(
         topHeadlinesNetworkEntityMapper: TopHeadlineNetworkEntityMapper,
         newsApiService: NewsApiService,
-        categoryNetworkEntityMapper: CategoryNetworkEntityMapper,
         mainDao: MainDao,
         feedItemCacheEntityMapper: FeedItemCacheEntityMapper
     ): ArticleRepository {
@@ -107,7 +112,6 @@ object AppModule {
             newsApiService,
             mainDao,
             topHeadlinesNetworkEntityMapper,
-            categoryNetworkEntityMapper,
             feedItemCacheEntityMapper
         )
     }
