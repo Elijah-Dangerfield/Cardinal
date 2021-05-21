@@ -6,12 +6,13 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.dangerfield.cardinal.R
 import com.dangerfield.cardinal.databinding.ItemFeedArticleLargeBinding
 import com.dangerfield.cardinal.domain.model.Article
+import com.dangerfield.cardinal.presentation.model.ArticlePresentationEntity
 import com.xwray.groupie.viewbinding.BindableItem
 import java.text.ParseException
 import java.text.SimpleDateFormat
 import java.util.*
 
-class FeedArticleItemLarge(val data: Article) : BindableItem<ItemFeedArticleLargeBinding>() {
+class FeedArticleItemLarge(val data: ArticlePresentationEntity) : BindableItem<ItemFeedArticleLargeBinding>(), FeedArticleItem {
     override fun bind(viewBinding: ItemFeedArticleLargeBinding, position: Int) {
         viewBinding.apply {
             articleTitle.text = data.title ?: "Untitled"
@@ -49,5 +50,9 @@ class FeedArticleItemLarge(val data: Article) : BindableItem<ItemFeedArticleLarg
             e.printStackTrace()
         }
         return date.toString().dropLast(18)
+    }
+
+    override fun getArticle(): ArticlePresentationEntity {
+        return data
     }
 }

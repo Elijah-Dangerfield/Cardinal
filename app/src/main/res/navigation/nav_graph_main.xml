@@ -9,7 +9,17 @@
         android:id="@+id/feedFragment"
         android:name="com.dangerfield.cardinal.presentation.ui.feed.FeedFragment"
         android:label="fragment_feed"
-        tools:layout="@layout/fragment_feed" />
+        tools:layout="@layout/fragment_feed" >
+        <action
+            android:id="@+id/action_feedFragment_to_searchFragment"
+            app:destination="@id/searchFragment" />
+        <action
+            android:id="@+id/action_feedFragment_to_settingsFragment"
+            app:destination="@id/settingsFragment" />
+        <action
+            android:id="@+id/action_feedFragment_to_detailsFragment"
+            app:destination="@id/detailsFragment" />
+    </fragment>
     <fragment
         android:id="@+id/categoriesFragment"
         android:name="com.dangerfield.cardinal.presentation.ui.categories.CategoriesFragment"
@@ -37,4 +47,19 @@
             app:popUpTo="@id/nav_graph_main"
             app:popUpToInclusive="true" />
     </fragment>
+    <fragment
+        android:id="@+id/searchFragment"
+        android:name="com.dangerfield.cardinal.presentation.ui.search.SearchFragment"
+        android:label="fragment_search"
+        tools:layout="@layout/fragment_search" />
+    <fragment
+        android:id="@+id/settingsFragment"
+        android:name="com.dangerfield.cardinal.presentation.ui.settings.SettingsFragment"
+        android:label="fragment_settings"
+        tools:layout="@layout/fragment_settings" />
+    <fragment
+        android:id="@+id/detailsFragment"
+        android:name="com.dangerfield.cardinal.presentation.ui.details.DetailsFragment"
+        android:label="fragment_details"
+        tools:layout="@layout/fragment_details" />
 </navigation>

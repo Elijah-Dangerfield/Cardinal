@@ -7,6 +7,9 @@ import com.dangerfield.cardinal.domain.model.Article
 import com.dangerfield.cardinal.domain.usecase.GetFeed
 import com.dangerfield.cardinal.domain.util.GenericError
 import com.dangerfield.cardinal.domain.util.Resource
+import com.dangerfield.cardinal.presentation.mapper.ArticlePresentationEntityMapper
+import com.dangerfield.cardinal.presentation.model.ArticlePresentationEntity
+import com.dangerfield.cardinal.presentation.model.DisplaySize
 import com.dangerfield.cardinal.presentation.util.SingleLiveEvent
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.collect
@@ -15,11 +18,13 @@ import javax.inject.Inject
 
 @HiltViewModel
 class FeedViewModel @Inject constructor(
-    private val getFeed: GetFeed
+    private val getFeed: GetFeed,
+    private val articlePresentationEntityMapper: ArticlePresentationEntityMapper
 ) : ViewModel() {
 
-    private val _feed : MutableLiveData<List<Article>> = MutableLiveData()
-    val feed : MutableLiveData<List<Article>>
+
+    private val _feed : MutableLiveData<List<ArticlePresentationEntity>> = MutableLiveData()
+    val feed : MutableLiveData<List<ArticlePresentationEntity>>
         get() = _feed
 
     private val _feedLoading : MutableLiveData<Boolean> = MutableLiveData()
@@ -41,16 +46,28 @@ class FeedViewModel @Inject constructor(
                 when(it) {
                     is Resource.Error -> {
                         _feedError.value = it.error
-                        _feed.value = it.data ?: listOf()
+                        pushFeedUpdate(it.data ?: listOf())
                     }
                     is Resource.Loading -> {
-                        _feed.value = it.data ?: listOf()
+                        pushFeedUpdate(it.data ?: listOf())
                     }
                     is Resource.Success -> {
-                        _feed.value = it.data
+                        pushFeedUpdate(it.data )
                     }
                 }
             }
         }
+    }
+
+    private fun pushFeedUpdate(list : List<Article>) {
+        val presentationList = list.map { article ->
+            articlePresentationEntityMapper.mapToEntity(article).also {
+                if ((0..10).random() < 3) {
+                    //3 out of 10 will be small
+                    it.displaySize = DisplaySize.Small
+                }
+            }
+        }
+        _feed.value = presentationList
     }
 }

@@ -31,19 +31,19 @@
             <ImageView
                 android:id="@+id/ic_settings"
                 android:layout_gravity="end"
-                android:layout_width="50dp"
-                android:layout_height="50dp"
-                android:padding="5dp"
-                android:layout_marginStart="3dp"
+                android:layout_width="@dimen/tool_bar_icon_width"
+                android:layout_height="@dimen/tool_bar_icon_height"
+                android:padding="@dimen/tool_bar_icon_padding"
+                android:layout_marginStart="@dimen/tool_bar_icon_space_between"
                 android:scaleType="centerInside"
                 android:src="@drawable/ic_settings"/>
 
             <ImageView
                 android:id="@+id/ic_search"
                 android:layout_gravity="end"
-                android:layout_width="50dp"
-                android:layout_height="50dp"
-                android:padding="5dp"
+                android:layout_width="@dimen/tool_bar_icon_width"
+                android:layout_height="@dimen/tool_bar_icon_height"
+                android:padding="@dimen/tool_bar_icon_padding"
                 android:scaleType="centerInside"
                 android:src="@drawable/ic_search"/>
 
@@ -58,9 +58,7 @@
         android:layout_height="match_parent"
         android:animateLayoutChanges="true"
         app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior"
-
         >
-
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/articlesRecyclerView"
             android:layout_width="match_parent"

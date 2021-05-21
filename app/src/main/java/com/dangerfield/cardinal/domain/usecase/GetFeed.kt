@@ -18,6 +18,7 @@ import kotlinx.coroutines.flow.*
  * TODO add pagination, when we run out, start using queries from the everything endpoint with categories
  * TODO add blacklist checking
  * TODO if user has less than 3 categories, make the page size larger
+ * TODO ensure no duplicates
  */
 class GetFeed(
     private val getUsersCategories: GetUsersCategories,
@@ -115,7 +116,7 @@ class GetFeed(
             //return success response
             val articles = responses.mapNotNull {
                 it.networkData
-            }.flatten().sortedBy { it.publishedAt }
+            }.flatten().sortedBy { it.publishedAt }.distinctBy { it.url + it.title }
             NetworkResponse.Success(data = articles)
         }
     }

@@ -7,11 +7,14 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.dangerfield.cardinal.R
 import com.dangerfield.cardinal.databinding.FragmentFeedBinding
 import com.dangerfield.cardinal.domain.model.Article
 import com.dangerfield.cardinal.domain.util.GenericError
+import com.dangerfield.cardinal.presentation.model.ArticlePresentationEntity
+import com.dangerfield.cardinal.presentation.model.DisplaySize
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.GroupieViewHolder
 import dagger.hilt.android.AndroidEntryPoint
@@ -40,17 +43,9 @@ class FeedFragment : Fragment() {
     }
 
     private fun setupObservers() {
-        viewModel.feed.observe(viewLifecycleOwner, {
-            updateFeed(it)
-        })
-
-        viewModel.feedLoading.observe(viewLifecycleOwner, {
-            showFeedLoading(it)
-        })
-
-        viewModel.feedError.observe(viewLifecycleOwner, {
-            handleError(it)
-        })
+        viewModel.feed.observe(viewLifecycleOwner, this::updateFeed)
+        viewModel.feedLoading.observe(viewLifecycleOwner, this::showFeedLoading)
+        viewModel.feedError.observe(viewLifecycleOwner, this::handleError)
     }
 
     private fun handleError(it: GenericError) {
@@ -60,17 +55,28 @@ class FeedFragment : Fragment() {
     private fun setupView() {
         setupRecyclerView()
         setupRefresher()
+        setupClickListeners()
+    }
+
+    private fun setupClickListeners() {
+        binding.icSearch.setOnClickListener {
+            findNavController().navigate(R.id.action_feedFragment_to_searchFragment)
+        }
+        binding.icSettings.setOnClickListener {
+            findNavController().navigate(R.id.action_feedFragment_to_settingsFragment)
+        }
+
+        adapter.setOnItemClickListener { item, view ->
+            val bundle = Bundle()
+            (item as? FeedArticleItem)?.let {
+                findNavController().navigate(R.id.action_feedFragment_to_detailsFragment)
+            }
+        }
     }
 
     private fun setupRecyclerView() {
         binding.articlesRecyclerView.layoutManager = LinearLayoutManager(view?.context)
         binding.articlesRecyclerView.adapter = adapter
-        adapter.setOnItemClickListener { item, view ->
-            val bundle = Bundle()
-            (item as? FeedArticleItemSmall)?.let {
-                Toast.makeText(context, "CLICK", Toast.LENGTH_SHORT).show()
-            }
-        }
     }
 
     private fun setupRefresher() {
@@ -81,12 +87,11 @@ class FeedFragment : Fragment() {
         binding.swipeRefreshLayout.setOnRefreshListener { viewModel.getFeed(forceRefresh = true) }
     }
 
-    private fun updateFeed(articles: List<Article>) {
+    private fun updateFeed(articles: List<ArticlePresentationEntity>) {
         val views = articles.map {
-            if ((0..10).random() > 6) {
-                FeedArticleItemLarge(it)
-            } else {
-                FeedArticleItemSmall(it)
+            when(it.displaySize) {
+                DisplaySize.Large -> FeedArticleItemLarge(it)
+                DisplaySize.Small -> FeedArticleItemSmall(it)
             }
         }
         adapter.update(views)
@@ -100,5 +105,4 @@ class FeedFragment : Fragment() {
         super.onDestroy()
         _binding = null
     }
-
 }
