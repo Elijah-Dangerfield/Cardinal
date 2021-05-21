@@ -5,4 +5,6 @@
     <string name="choose_topics_that_interest_you">Choose Topics That Interest You</string>
     <string name="skip">Skip</string>
     <string name="next">Next</string>
+    <string name="search">Search</string>
+    <string name="settings">settings</string>
 </resources>

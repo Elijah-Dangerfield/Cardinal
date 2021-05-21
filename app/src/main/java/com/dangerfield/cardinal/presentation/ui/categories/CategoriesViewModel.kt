@@ -47,5 +47,4 @@ class CategoriesViewModel @Inject constructor(
         setUserUserHasSelectedCategories.invoke()
         setUsersCategories.invoke(_usersCategories.value ?: listOf())
     }
-
 }

@@ -8,8 +8,9 @@
 
     <ImageView
         android:id="@+id/imageView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="200dp"
+        android:layout_height="200dp"
         android:layout_gravity="center"
-        android:src="@drawable/ic_cardinal_small" />
+        android:src="@drawable/ic_cardinal"
+        app:srcCompat="@drawable/ic_cardinal" />
 </FrameLayout>

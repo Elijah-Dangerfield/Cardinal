@@ -4,9 +4,9 @@ import com.dangerfield.cardinal.domain.model.Category
 import com.dangerfield.cardinal.domain.repository.UserRepository
 
 
-class SetUsersCategories (
+class SetUsersCategories(
     private val userRepository: UserRepository
-        ){
+) {
 
     fun invoke(list: List<Category>) {
         userRepository.cacheUsersCategories(list)

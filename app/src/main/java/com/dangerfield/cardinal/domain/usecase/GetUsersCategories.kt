@@ -7,7 +7,7 @@ class GetUsersCategories(
     private val userRepository: UserRepository
 ) {
 
-    fun invoke()  : List<Category> {
+    fun invoke(): List<Category> {
         return userRepository.getUsersCategories()
     }
 }

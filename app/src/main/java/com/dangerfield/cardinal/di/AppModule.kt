@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.SharedPreferences
 import androidx.room.Room
 import com.dangerfield.cardinal.data.cache.mapper.FeedItemCacheEntityMapper
+import com.dangerfield.cardinal.data.cache.mapper.SearchedTermCacheEntityMapper
 import com.dangerfield.cardinal.data.cache.service.CardinalDatabase
 import com.dangerfield.cardinal.data.cache.service.ArticleDao
 import com.dangerfield.cardinal.data.cache.service.CategoryCacheService
@@ -154,8 +155,10 @@ object AppModule {
     @Singleton
     @Provides
     fun providesUserRepository(
-        cacheService: CategoryCacheService
+        cacheService: CategoryCacheService,
+        searchedTermDao: SearchedTermDao,
+        searchedTermCacheEntityMapper: SearchedTermCacheEntityMapper
     ): UserRepository {
-        return UserRepositoryImpl(cacheService)
+        return UserRepositoryImpl(cacheService, searchedTermDao, searchedTermCacheEntityMapper)
     }
 }
