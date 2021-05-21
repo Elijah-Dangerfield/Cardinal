@@ -27,7 +27,7 @@ class GetFeed(
     private val networkCallWrapper: NetworkCallWrapper,
     private val cacheCallWrapper: CacheCallWrapper,
     private val dispatcher: CoroutineDispatcher = Dispatchers.IO,
-    ) {
+) {
     private val requestKey = "FEED_REQUEST"
     private val requestTimeout = 3000L
 
@@ -60,9 +60,10 @@ class GetFeed(
                 emitAll(result)
 
             } else {
-                val cacheFlow : Flow<Resource<List<Article>, GenericError>> = getCachedFeedFlow().map {
-                    Resource.Success(data = it)
-                }
+                val cacheFlow: Flow<Resource<List<Article>, GenericError>> =
+                    getCachedFeedFlow().map {
+                        Resource.Success(data = it)
+                    }
                 emitAll(cacheFlow)
             }
         }

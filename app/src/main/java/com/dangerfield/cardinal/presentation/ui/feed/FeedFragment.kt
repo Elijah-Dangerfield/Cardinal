@@ -14,6 +14,7 @@ import com.dangerfield.cardinal.databinding.FragmentFeedBinding
 import com.dangerfield.cardinal.domain.util.GenericError
 import com.dangerfield.cardinal.presentation.model.ArticlePresentationEntity
 import com.dangerfield.cardinal.presentation.model.DisplaySize
+import com.dangerfield.cardinal.presentation.util.smoothScrollToPositionWithSpeed
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.GroupieViewHolder
 import dagger.hilt.android.AndroidEntryPoint
@@ -72,6 +73,10 @@ class FeedFragment : Fragment() {
             (item as? FeedArticleItem)?.let {
                 findNavController().navigate(R.id.action_feedFragment_to_detailsFragment)
             }
+        }
+
+        binding.toolbar.setNavigationOnClickListener {
+            binding.articlesRecyclerView.smoothScrollToPositionWithSpeed(0, 10f)
         }
     }
 
