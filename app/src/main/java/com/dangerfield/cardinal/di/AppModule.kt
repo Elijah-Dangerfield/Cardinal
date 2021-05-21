@@ -1,21 +1,23 @@
 package com.dangerfield.cardinal.di
 
 import android.content.Context
+import android.content.SharedPreferences
 import androidx.room.Room
 import com.dangerfield.cardinal.data.cache.mapper.FeedItemCacheEntityMapper
 import com.dangerfield.cardinal.data.cache.service.CardinalDatabase
-import com.dangerfield.cardinal.data.cache.service.MainDao
+import com.dangerfield.cardinal.data.cache.service.ArticleDao
+import com.dangerfield.cardinal.data.cache.service.CategoryCacheService
+import com.dangerfield.cardinal.data.cache.service.SearchedTermDao
 import com.dangerfield.cardinal.data.network.mapper.TopHeadlineNetworkEntityMapper
 import com.dangerfield.cardinal.data.network.service.NewsApiService
 import com.dangerfield.cardinal.data.repository.ArticleRepositoryImpl
+import com.dangerfield.cardinal.data.repository.UserRepositoryImpl
 import com.dangerfield.cardinal.data.util.CacheCallWrapperImpl
 import com.dangerfield.cardinal.data.util.NetworkCallWrapperImpl
 import com.dangerfield.cardinal.data.util.RateLimiterImpl
 import com.dangerfield.cardinal.domain.repository.ArticleRepository
-import com.dangerfield.cardinal.domain.usecase.GetFeed
-import com.dangerfield.cardinal.domain.usecase.GetUsersCategories
-import com.dangerfield.cardinal.domain.usecase.HasUserSelectedCategories
-import com.dangerfield.cardinal.domain.usecase.SetUsersCategories
+import com.dangerfield.cardinal.domain.repository.UserRepository
+import com.dangerfield.cardinal.domain.usecase.*
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import dagger.Module
@@ -68,9 +70,29 @@ object AppModule {
 
     @Singleton
     @Provides
-    fun providesMainDao(db: CardinalDatabase): MainDao {
-        return db.mainDao()
+    fun providesArticleDao(db: CardinalDatabase): ArticleDao {
+        return db.articleDao()
     }
+
+    @Singleton
+    @Provides
+    fun providesSearchedTermDao(db: CardinalDatabase): SearchedTermDao {
+        return db.searchedTermDao()
+    }
+
+    @Singleton
+    @Provides
+    fun providesCategoryCacheService(
+        @ApplicationContext context: Context,
+        gson: Gson,
+        sharedPreferences: SharedPreferences
+    ): CategoryCacheService {
+        return CategoryCacheService(sharedPreferences, gson, context.resources)
+    }
+
+    @Provides
+    fun providesSharedPreferences(@ApplicationContext context: Context): SharedPreferences =
+        context.getSharedPreferences(context.applicationInfo.name, Context.MODE_PRIVATE)
 
     @Singleton
     @Provides
@@ -91,20 +113,26 @@ object AppModule {
 
     @Singleton
     @Provides
-    fun providesGetUsersCategoriesUseCase(): GetUsersCategories {
-        return GetUsersCategories()
+    fun providesGetUsersCategoriesUseCase(userRepository: UserRepository): GetUsersCategories {
+        return GetUsersCategories(userRepository)
     }
 
     @Singleton
     @Provides
-    fun providesHasUserSelectedCategoriesUseCase(): HasUserSelectedCategories {
-        return HasUserSelectedCategories()
+    fun providesHasUserSelectedCategoriesUseCase(userRepository: UserRepository): HasUserSelectedCategories {
+        return HasUserSelectedCategories(userRepository)
     }
 
     @Singleton
     @Provides
-    fun providesSetUserCategoriesUseCase(): SetUsersCategories {
-        return SetUsersCategories()
+    fun providesUserHasSelectedCategoriesUseCase(userRepository: UserRepository): SetUserHasSelectedCategories {
+        return SetUserHasSelectedCategories(userRepository)
+    }
+
+    @Singleton
+    @Provides
+    fun providesSetUserCategoriesUseCase(userRepository: UserRepository): SetUsersCategories {
+        return SetUsersCategories(userRepository)
     }
 
     @Singleton
@@ -112,14 +140,22 @@ object AppModule {
     fun providesArticleRepository(
         topHeadlinesNetworkEntityMapper: TopHeadlineNetworkEntityMapper,
         newsApiService: NewsApiService,
-        mainDao: MainDao,
+        articleDao: ArticleDao,
         feedItemCacheEntityMapper: FeedItemCacheEntityMapper
     ): ArticleRepository {
         return ArticleRepositoryImpl(
             newsApiService,
-            mainDao,
+            articleDao,
             topHeadlinesNetworkEntityMapper,
             feedItemCacheEntityMapper
         )
+    }
+
+    @Singleton
+    @Provides
+    fun providesUserRepository(
+        cacheService: CategoryCacheService
+    ): UserRepository {
+        return UserRepositoryImpl(cacheService)
     }
 }

@@ -4,7 +4,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
@@ -35,16 +34,9 @@ class CategoriesFragment : Fragment() {
         return binding.root
     }
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-
-        val callback: OnBackPressedCallback =
-            object : OnBackPressedCallback(true) {
-                override fun handleOnBackPressed() {
-                    //do nothing depending on where you came from
-                }
-            }
-        requireActivity().onBackPressedDispatcher.addCallback(this, callback)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        setupObservers()
     }
 
     private fun setupView() {
@@ -73,14 +65,8 @@ class CategoriesFragment : Fragment() {
 
         binding.btnNext.setOnClickListener {
             viewModel.saveCurrentUserCategories()
-            findNavController().navigateUp()
+            findNavController().navigate(R.id.action_categoriesFragment_to_feedFragment)
         }
-    }
-
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        setupObservers()
     }
 
     private fun setupObservers() {

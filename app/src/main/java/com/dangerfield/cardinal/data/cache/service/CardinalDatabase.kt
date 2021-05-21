@@ -13,7 +13,8 @@ import com.dangerfield.cardinal.data.cache.model.SearchedTermCacheEntity
 )
 abstract class CardinalDatabase : RoomDatabase() {
 
-    abstract fun mainDao(): MainDao
+    abstract fun articleDao(): ArticleDao
+    abstract fun searchedTermDao(): SearchedTermDao
 
     companion object {
         @Volatile

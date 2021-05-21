@@ -1,7 +1,7 @@
 package com.dangerfield.cardinal.data.repository
 
 import com.dangerfield.cardinal.data.cache.mapper.FeedItemCacheEntityMapper
-import com.dangerfield.cardinal.data.cache.service.MainDao
+import com.dangerfield.cardinal.data.cache.service.ArticleDao
 import com.dangerfield.cardinal.data.network.mapper.TopHeadlineNetworkEntityMapper
 import com.dangerfield.cardinal.data.network.service.NewsApiService
 import com.dangerfield.cardinal.domain.model.Article
@@ -12,7 +12,7 @@ import kotlinx.coroutines.flow.map
 
 class ArticleRepositoryImpl(
     private val articlesService: NewsApiService,
-    private val mainDao: MainDao,
+    private val articleDao: ArticleDao,
     private val topHeadlinesNetworkEntityMapper: TopHeadlineNetworkEntityMapper,
     private val feedItemCacheEntityMapper: FeedItemCacheEntityMapper
 ) : ArticleRepository {
@@ -35,13 +35,13 @@ class ArticleRepositoryImpl(
     }
 
     override suspend fun getCachedFeed(): Flow<List<Article>> {
-        return mainDao.getCachedFeed().map { articles ->
+        return articleDao.getCachedFeed().map { articles ->
             articles.map { feedItemCacheEntityMapper.mapFromEntity(it) }
         }
     }
 
     override suspend fun replaceCachedFeed(articles: List<Article>) {
-        mainDao.replaceFeed(articles.map { feedItemCacheEntityMapper.mapToEntity(it) })
+        articleDao.replaceFeed(articles.map { feedItemCacheEntityMapper.mapToEntity(it) })
     }
 
     override suspend fun searchForArticles(term: String): List<Article> {
@@ -53,6 +53,18 @@ class ArticleRepositoryImpl(
     }
 
     override suspend fun blacklistArticle(article: Article): Boolean {
+        TODO("Not yet implemented")
+    }
+
+    override suspend fun getUsersOpenedArticles(): List<Article> {
+        TODO("Not yet implemented")
+    }
+
+    override suspend fun clearUsersOpenedArticles() {
+        TODO("Not yet implemented")
+    }
+
+    override suspend fun addUserOpenedArticle(article: Article) {
         TODO("Not yet implemented")
     }
 }

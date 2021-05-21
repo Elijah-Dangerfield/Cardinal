@@ -22,4 +22,9 @@ interface ArticleRepository {
     //blacklist
     suspend fun isArticleBlackListed(article: Article) : Boolean
     suspend fun blacklistArticle(article: Article) : Boolean
+
+    //opened articles for search only
+    suspend fun getUsersOpenedArticles() : List<Article>
+    suspend fun clearUsersOpenedArticles()
+    suspend fun addUserOpenedArticle(article: Article)
 }

@@ -17,6 +17,7 @@ import kotlinx.coroutines.flow.*
  * the general top headlines. Sorted by publish date
  * TODO add pagination, when we run out, start using queries from the everything endpoint with categories
  * TODO add blacklist checking
+ * TODO if user has less than 3 categories, make the page size larger
  */
 class GetFeed(
     private val getUsersCategories: GetUsersCategories,

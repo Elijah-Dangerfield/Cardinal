@@ -1,8 +1,14 @@
 package com.dangerfield.cardinal.domain.usecase
 
-class SetUsersCategories {
-    //updates prefrences
-    fun invoke() {
+import com.dangerfield.cardinal.domain.model.Category
+import com.dangerfield.cardinal.domain.repository.UserRepository
 
+
+class SetUsersCategories (
+    private val userRepository: UserRepository
+        ){
+
+    fun invoke(list: List<Category>) {
+        userRepository.cacheUsersCategories(list)
     }
 }

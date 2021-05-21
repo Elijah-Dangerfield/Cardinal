@@ -8,7 +8,7 @@ import kotlinx.coroutines.flow.Flow
 
 
 @Dao
-interface MainDao {
+interface ArticleDao {
     //--------------Feed--------------------
     /**
      * gets cached feed
@@ -66,31 +66,5 @@ interface MainDao {
     @Query("DELETE from OPENED_ARTICLE")
     suspend fun clearOpenedArticles()
 
-    //--------------Searched Terms--------------------
-
-    /**
-     * gets all searched terms
-     */
-    @Query("SELECT * from SEARCHED_TERM")
-    fun getSearchedTerms(): Flow<List<SearchedTermCacheEntity>>
-
-    /**
-     * inserts a new searched term
-     */
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertSearchedTerm(term: SearchedTermCacheEntity)
-
-
-    /**
-     * removes a specific searched term
-     */
-    @Query("DELETE from SEARCHED_TERM where value == :value")
-    suspend fun deleteSearchedTerm(value: String)
-
-    /**
-     * removes all searched terms
-     */
-    @Query("DELETE from SEARCHED_TERM")
-    suspend fun clearSearchedTerms()
 
 }

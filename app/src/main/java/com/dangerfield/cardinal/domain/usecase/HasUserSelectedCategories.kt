@@ -1,8 +1,12 @@
 package com.dangerfield.cardinal.domain.usecase
 
-class HasUserSelectedCategories {
+import com.dangerfield.cardinal.domain.repository.UserRepository
+
+class HasUserSelectedCategories (
+    private val userRepository: UserRepository
+        ){
 
     fun invoke() : Boolean {
-        return false
+        return userRepository.getHasUserSelectedCategories()
     }
 }

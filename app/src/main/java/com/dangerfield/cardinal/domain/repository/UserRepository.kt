@@ -16,9 +16,4 @@ interface UserRepository {
     suspend fun getUsersSearchedTerms() : List<SearchedTerm>
     suspend fun clearUsersSearchedTerms()
     suspend fun addUserSearchedTerm(term: SearchedTerm)
-
-    //opened articles
-    suspend fun getUsersOpenedArticles() : List<Article>
-    suspend fun clearUsersOpenedArticles()
-    suspend fun addUserOpenedArticle(article: Article)
 }

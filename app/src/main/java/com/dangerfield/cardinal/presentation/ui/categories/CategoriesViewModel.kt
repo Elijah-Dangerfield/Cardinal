@@ -5,6 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
 import androidx.lifecycle.ViewModel
 import com.dangerfield.cardinal.domain.model.Category
+import com.dangerfield.cardinal.domain.usecase.SetUserHasSelectedCategories
 import com.dangerfield.cardinal.domain.usecase.SetUsersCategories
 import com.dangerfield.cardinal.presentation.mapper.CategoryPresentationEntityMapper
 import com.dangerfield.cardinal.presentation.model.CategoryPresentationEntity
@@ -14,7 +15,8 @@ import javax.inject.Inject
 @HiltViewModel
 class CategoriesViewModel @Inject constructor(
     private val categoryPresentationEntityMapper: CategoryPresentationEntityMapper,
-    private val setUsersCategories: SetUsersCategories
+    private val setUsersCategories: SetUsersCategories,
+    private val setUserUserHasSelectedCategories: SetUserHasSelectedCategories
 ) : ViewModel() {
 
     enum class ButtonState { Next, Skip }
@@ -42,7 +44,8 @@ class CategoriesViewModel @Inject constructor(
     }
 
     fun saveCurrentUserCategories() {
-
+        setUserUserHasSelectedCategories.invoke()
+        setUsersCategories.invoke(_usersCategories.value ?: listOf())
     }
 
 }
