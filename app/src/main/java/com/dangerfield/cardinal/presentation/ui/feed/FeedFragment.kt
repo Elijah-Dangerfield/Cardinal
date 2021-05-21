@@ -11,7 +11,6 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.dangerfield.cardinal.R
 import com.dangerfield.cardinal.databinding.FragmentFeedBinding
-import com.dangerfield.cardinal.domain.model.Article
 import com.dangerfield.cardinal.domain.util.GenericError
 import com.dangerfield.cardinal.presentation.model.ArticlePresentationEntity
 import com.dangerfield.cardinal.presentation.model.DisplaySize
@@ -25,7 +24,7 @@ class FeedFragment : Fragment() {
     private val viewModel: FeedViewModel by viewModels()
     private var _binding: FragmentFeedBinding? = null
     private val binding get() = _binding!!
-    private val adapter = GroupAdapter<GroupieViewHolder>()
+    private val groupAdapter = GroupAdapter<GroupieViewHolder>()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -43,7 +42,9 @@ class FeedFragment : Fragment() {
     }
 
     private fun setupObservers() {
-        viewModel.feed.observe(viewLifecycleOwner, this::updateFeed)
+        viewModel.feed.observe(viewLifecycleOwner, {
+            updateFeed(it.first, it.second)
+        })
         viewModel.feedLoading.observe(viewLifecycleOwner, this::showFeedLoading)
         viewModel.feedError.observe(viewLifecycleOwner, this::handleError)
     }
@@ -66,7 +67,7 @@ class FeedFragment : Fragment() {
             findNavController().navigate(R.id.action_feedFragment_to_settingsFragment)
         }
 
-        adapter.setOnItemClickListener { item, view ->
+        groupAdapter.setOnItemClickListener { item, view ->
             val bundle = Bundle()
             (item as? FeedArticleItem)?.let {
                 findNavController().navigate(R.id.action_feedFragment_to_detailsFragment)
@@ -75,8 +76,10 @@ class FeedFragment : Fragment() {
     }
 
     private fun setupRecyclerView() {
-        binding.articlesRecyclerView.layoutManager = LinearLayoutManager(view?.context)
-        binding.articlesRecyclerView.adapter = adapter
+        binding.articlesRecyclerView.apply {
+            layoutManager = LinearLayoutManager(view?.context)
+            adapter = groupAdapter
+        }
     }
 
     private fun setupRefresher() {
@@ -87,14 +90,17 @@ class FeedFragment : Fragment() {
         binding.swipeRefreshLayout.setOnRefreshListener { viewModel.getFeed(forceRefresh = true) }
     }
 
-    private fun updateFeed(articles: List<ArticlePresentationEntity>) {
+    private fun updateFeed(articles: List<ArticlePresentationEntity>, shouldAnimateChange: Boolean) {
         val views = articles.map {
             when(it.displaySize) {
                 DisplaySize.Large -> FeedArticleItemLarge(it)
                 DisplaySize.Small -> FeedArticleItemSmall(it)
             }
         }
-        adapter.update(views)
+        groupAdapter.update(views)
+        if(shouldAnimateChange) {
+            binding.articlesRecyclerView.scheduleLayoutAnimation()
+        }
     }
 
     private fun showFeedLoading(loading: Boolean) {

@@ -63,6 +63,7 @@
             android:id="@+id/articlesRecyclerView"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:layoutAnimation="@anim/fall_down_anim"
             android:scrollbarStyle="outsideOverlay"
             android:scrollbars="vertical"
             />

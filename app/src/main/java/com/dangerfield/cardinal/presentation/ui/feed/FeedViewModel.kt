@@ -1,5 +1,6 @@
 package com.dangerfield.cardinal.presentation.ui.feed
 
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -22,13 +23,12 @@ class FeedViewModel @Inject constructor(
     private val articlePresentationEntityMapper: ArticlePresentationEntityMapper
 ) : ViewModel() {
 
-
-    private val _feed : MutableLiveData<List<ArticlePresentationEntity>> = MutableLiveData()
-    val feed : MutableLiveData<List<ArticlePresentationEntity>>
+    private val _feed : MutableLiveData<Pair<List<ArticlePresentationEntity>, Boolean>> = MutableLiveData()
+    val feed : LiveData<Pair<List<ArticlePresentationEntity>, Boolean>>
         get() = _feed
 
     private val _feedLoading : MutableLiveData<Boolean> = MutableLiveData()
-    val feedLoading : MutableLiveData<Boolean>
+    val feedLoading : LiveData<Boolean>
         get() = _feedLoading
 
     private val _feedError: SingleLiveEvent<GenericError> = SingleLiveEvent()
@@ -38,6 +38,8 @@ class FeedViewModel @Inject constructor(
     init {
         getFeed()
     }
+
+    fun isFeedCurrentlyLoading() = _feedLoading.value ?: false
 
     fun getFeed(forceRefresh: Boolean = false) {
         viewModelScope.launch {
@@ -49,17 +51,17 @@ class FeedViewModel @Inject constructor(
                         pushFeedUpdate(it.data ?: listOf())
                     }
                     is Resource.Loading -> {
-                        pushFeedUpdate(it.data ?: listOf())
+                        pushFeedUpdate(it.data ?: listOf(), false)
                     }
                     is Resource.Success -> {
-                        pushFeedUpdate(it.data )
+                        pushFeedUpdate(it.data)
                     }
                 }
             }
         }
     }
 
-    private fun pushFeedUpdate(list : List<Article>) {
+    private fun pushFeedUpdate(list : List<Article>, shouldAnimate : Boolean = true) {
         val presentationList = list.map { article ->
             articlePresentationEntityMapper.mapToEntity(article).also {
                 if ((0..10).random() < 3) {
@@ -68,6 +70,6 @@ class FeedViewModel @Inject constructor(
                 }
             }
         }
-        _feed.value = presentationList
+        _feed.value = Pair(presentationList, shouldAnimate)
     }
 }
