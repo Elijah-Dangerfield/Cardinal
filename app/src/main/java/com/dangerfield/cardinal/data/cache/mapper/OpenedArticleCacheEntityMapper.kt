@@ -8,6 +8,7 @@ import com.dangerfield.cardinal.domain.util.EntityMapper
 class OpenedArticleCacheEntityMapper : EntityMapper<OpenedArticleCacheEntity, Article> {
     override fun mapFromEntity(entity: OpenedArticleCacheEntity): Article {
         return Article(
+            entity.id,
             entity.author,
             entity.content,
             entity.description,
@@ -20,7 +21,7 @@ class OpenedArticleCacheEntityMapper : EntityMapper<OpenedArticleCacheEntity, Ar
 
     override fun mapToEntity(domainModel: Article): OpenedArticleCacheEntity {
         return OpenedArticleCacheEntity(
-            null,
+            domainModel.id,
             author = domainModel.author,
             content = domainModel.content,
             description = domainModel.description,

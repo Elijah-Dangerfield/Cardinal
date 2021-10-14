@@ -1,14 +1,16 @@
 package com.dangerfield.cardinal.presentation.mapper
 
 import com.dangerfield.cardinal.domain.model.Article
-import com.dangerfield.cardinal.domain.util.EntityMapper
+import com.dangerfield.cardinal.domain.usecase.GetArticleDisplaySize
 import com.dangerfield.cardinal.presentation.model.ArticlePresentationEntity
-import com.dangerfield.cardinal.presentation.model.DisplaySize
 import javax.inject.Inject
 
-class ArticlePresentationEntityMapper @Inject constructor(): EntityMapper<ArticlePresentationEntity, Article> {
-    override fun mapFromEntity(entity: ArticlePresentationEntity): Article {
+class ArticlePresentationEntityMapper @Inject constructor(
+    private val getArticleDisplaySize: GetArticleDisplaySize
+) {
+    fun mapFromEntity(entity: ArticlePresentationEntity): Article {
         return Article(
+            entity.id,
             entity.author,
             entity.content,
             entity.description,
@@ -20,8 +22,9 @@ class ArticlePresentationEntityMapper @Inject constructor(): EntityMapper<Articl
         )
     }
 
-    override fun mapToEntity(domainModel: Article): ArticlePresentationEntity {
+    suspend fun mapToEntity(domainModel: Article): ArticlePresentationEntity {
         return ArticlePresentationEntity(
+            domainModel.id,
             domainModel.author,
             domainModel.content,
             domainModel.description,
@@ -30,7 +33,7 @@ class ArticlePresentationEntityMapper @Inject constructor(): EntityMapper<Articl
             domainModel.title,
             domainModel.url,
             domainModel.urlToImage,
-            DisplaySize.Large //Large by default, assign some % to be small
+            getArticleDisplaySize.invoke(domainModel.id)
         )
     }
 }

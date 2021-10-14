@@ -9,6 +9,7 @@ import javax.inject.Inject
 class FeedItemCacheEntityMapper @Inject constructor(): EntityMapper<FeedItemCacheEntity, Article> {
     override fun mapFromEntity(entity: FeedItemCacheEntity): Article {
         return Article(
+            entity.id,
             entity.author,
             entity.content,
             entity.description,
@@ -21,7 +22,7 @@ class FeedItemCacheEntityMapper @Inject constructor(): EntityMapper<FeedItemCach
 
     override fun mapToEntity(domainModel: Article): FeedItemCacheEntity {
         return FeedItemCacheEntity(
-            null,
+            id = domainModel.id,
             author = domainModel.author,
             content = domainModel.content,
             description = domainModel.description,

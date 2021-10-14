@@ -11,17 +11,19 @@ class ArticleNetworkEntityMapper @Inject constructor(
 
     override fun mapFromEntity(entity: ArticleNetworkEntity): Article {
         return Article(
+            id = entity.id,
             author = entity.author,
-        content = entity.content,
-        description = entity.description,
-        publishedAt = entity.publishedAt,
-        source = entity.sourceNetworkEntity?.let { sourceNetworkEntityMapper.mapFromEntity(it) },
-        title = entity.title,
-        url = entity.url,
-        urlToImage = entity.urlToImage
+            content = entity.content,
+            description = entity.description,
+            publishedAt = entity.publishedAt,
+            source = entity.sourceNetworkEntity?.let { sourceNetworkEntityMapper.mapFromEntity(it) },
+            title = entity.title,
+            url = entity.url,
+            urlToImage = entity.urlToImage
         )
     }
 
+    //TODO this is a code smell, we will never need to map to an article network entity
     override fun mapToEntity(domainModel: Article): ArticleNetworkEntity {
         return ArticleNetworkEntity(
             author = domainModel.author,

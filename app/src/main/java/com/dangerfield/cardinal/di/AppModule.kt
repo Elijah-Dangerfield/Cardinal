@@ -3,6 +3,7 @@ package com.dangerfield.cardinal.di
 import android.content.Context
 import android.content.SharedPreferences
 import androidx.room.Room
+import com.dangerfield.cardinal.data.cache.mapper.ArticleSizeCacheEntityMapper
 import com.dangerfield.cardinal.data.cache.mapper.FeedItemCacheEntityMapper
 import com.dangerfield.cardinal.data.cache.mapper.SearchedTermCacheEntityMapper
 import com.dangerfield.cardinal.data.cache.service.CardinalDatabase
@@ -66,6 +67,7 @@ object AppModule {
     @Provides
     fun providesCardinalDatabase(@ApplicationContext context: Context): CardinalDatabase {
         return Room.databaseBuilder(context, CardinalDatabase::class.java, "cardinal.db")
+            .fallbackToDestructiveMigration() //TODO REMOVE
             .build()
     }
 
@@ -126,6 +128,15 @@ object AppModule {
 
     @Singleton
     @Provides
+    fun providesGetArticleDisplaySizeUseCase(
+        cacheCallWrapper: CacheCallWrapperImpl,
+        repository: ArticleRepository,
+    ): GetArticleDisplaySize {
+        return GetArticleDisplaySize(cacheCallWrapper, repository)
+    }
+
+    @Singleton
+    @Provides
     fun providesUserHasSelectedCategoriesUseCase(userRepository: UserRepository): SetUserHasSelectedCategories {
         return SetUserHasSelectedCategories(userRepository)
     }
@@ -142,13 +153,15 @@ object AppModule {
         topHeadlinesNetworkEntityMapper: TopHeadlineNetworkEntityMapper,
         newsApiService: NewsApiService,
         articleDao: ArticleDao,
-        feedItemCacheEntityMapper: FeedItemCacheEntityMapper
+        feedItemCacheEntityMapper: FeedItemCacheEntityMapper,
+        articleSizeCacheEntityMapper: ArticleSizeCacheEntityMapper
     ): ArticleRepository {
         return ArticleRepositoryImpl(
             newsApiService,
             articleDao,
             topHeadlinesNetworkEntityMapper,
-            feedItemCacheEntityMapper
+            feedItemCacheEntityMapper,
+            articleSizeCacheEntityMapper
         )
     }
 
