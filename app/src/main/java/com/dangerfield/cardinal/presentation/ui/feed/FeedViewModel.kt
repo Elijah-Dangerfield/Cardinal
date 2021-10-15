@@ -1,5 +1,6 @@
 package com.dangerfield.cardinal.presentation.ui.feed
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -10,8 +11,8 @@ import com.dangerfield.cardinal.domain.util.GenericError
 import com.dangerfield.cardinal.domain.util.Resource
 import com.dangerfield.cardinal.presentation.mapper.ArticlePresentationEntityMapper
 import com.dangerfield.cardinal.presentation.model.ArticlePresentationEntity
-import com.dangerfield.cardinal.presentation.model.DisplaySize
 import com.dangerfield.cardinal.presentation.util.SingleLiveEvent
+import com.dangerfield.cardinal.presentation.util.pmap
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
@@ -23,12 +24,15 @@ class FeedViewModel @Inject constructor(
     private val articlePresentationEntityMapper: ArticlePresentationEntityMapper
 ) : ViewModel() {
 
-    private val _feed : MutableLiveData<Pair<List<ArticlePresentationEntity>, Boolean>> = MutableLiveData()
-    val feed : LiveData<Pair<List<ArticlePresentationEntity>, Boolean>>
+    data class FeedUpdate(val articles: List<ArticlePresentationEntity>, val shouldAnimate: Boolean)
+
+    private val _feed: MutableLiveData<FeedUpdate> =
+        MutableLiveData()
+    val feed: LiveData<FeedUpdate>
         get() = _feed
 
-    private val _feedLoading : MutableLiveData<Boolean> = MutableLiveData()
-    val feedLoading : LiveData<Boolean>
+    private val _feedLoading: MutableLiveData<Boolean> = MutableLiveData()
+    val feedLoading: LiveData<Boolean>
         get() = _feedLoading
 
     private val _feedError: SingleLiveEvent<GenericError> = SingleLiveEvent()
@@ -43,9 +47,9 @@ class FeedViewModel @Inject constructor(
 
     fun getFeed(forceRefresh: Boolean = false) {
         viewModelScope.launch {
-            getFeed.invoke().collect {
+            getFeed.invoke(forceRefresh).collect {
                 _feedLoading.postValue(it is Resource.Loading)
-                when(it) {
+                when (it) {
                     is Resource.Error -> {
                         _feedError.value = it.error
                         pushFeedUpdate(it.data ?: listOf())
@@ -61,15 +65,12 @@ class FeedViewModel @Inject constructor(
         }
     }
 
-    private fun pushFeedUpdate(list : List<Article>, shouldAnimate : Boolean = true) {
-        val presentationList = list.map { article ->
-            articlePresentationEntityMapper.mapToEntity(article).also {
-                if ((0..10).random() < 3) {
-                    //3 out of 10 will be small
-                    it.displaySize = DisplaySize.Small
-                }
-            }
+    private suspend fun pushFeedUpdate(list: List<Article>, shouldAnimate: Boolean = true) {
+        Log.d("Elijah", "Pushing feed update with ${list.size} models")
+        val presentableList = list.pmap { article ->
+            articlePresentationEntityMapper.mapToEntity(article)
         }
-        _feed.value = Pair(presentationList, shouldAnimate)
+
+        _feed.value = FeedUpdate(presentableList, shouldAnimate)
     }
 }

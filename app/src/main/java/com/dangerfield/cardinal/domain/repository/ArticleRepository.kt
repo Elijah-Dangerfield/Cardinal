@@ -1,6 +1,7 @@
 package com.dangerfield.cardinal.domain.repository
 
 import com.dangerfield.cardinal.domain.model.Article
+import com.dangerfield.cardinal.domain.model.ArticleSize
 import com.dangerfield.cardinal.domain.model.Category
 import kotlinx.coroutines.flow.Flow
 
@@ -27,4 +28,9 @@ interface ArticleRepository {
     suspend fun getUsersOpenedArticles() : List<Article>
     suspend fun clearUsersOpenedArticles()
     suspend fun addUserOpenedArticle(article: Article)
+
+    //utility
+    suspend fun getArticleSize(id: String) : ArticleSize?
+    suspend fun setArticleSize(id: String, articleSize: ArticleSize)
+
 }

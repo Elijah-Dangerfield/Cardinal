@@ -1,9 +1,11 @@
 package com.dangerfield.cardinal.data.cache.service
 
 import androidx.room.*
+import com.dangerfield.cardinal.data.cache.model.ArticleSizeCacheEntity
 import com.dangerfield.cardinal.data.cache.model.FeedItemCacheEntity
 import com.dangerfield.cardinal.data.cache.model.OpenedArticleCacheEntity
 import com.dangerfield.cardinal.data.cache.model.SearchedTermCacheEntity
+import com.dangerfield.cardinal.domain.model.ArticleSize
 import kotlinx.coroutines.flow.Flow
 
 
@@ -66,5 +68,12 @@ interface ArticleDao {
     @Query("DELETE from OPENED_ARTICLE")
     suspend fun clearOpenedArticles()
 
+
+    //--------------Util--------------------
+    @Query("SELECT * from ARTICLE_SIZE where id == :id LIMIT 1")
+    suspend fun getArticleSize(id: String): ArticleSizeCacheEntity?
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertArticleSize(entity: ArticleSizeCacheEntity)
 
 }

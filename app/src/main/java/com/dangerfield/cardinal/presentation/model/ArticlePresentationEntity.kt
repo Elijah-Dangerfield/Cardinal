@@ -1,11 +1,13 @@
 package com.dangerfield.cardinal.presentation.model
 
 import android.os.Parcelable
+import com.dangerfield.cardinal.domain.model.ArticleSize
 import com.dangerfield.cardinal.domain.model.Source
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
 data class ArticlePresentationEntity(
+    val id: String,
     val author: String?,
     val content: String?,
     val description: String?,
@@ -14,9 +16,10 @@ data class ArticlePresentationEntity(
     val title: String?,
     val url: String?,
     val urlToImage: String?,
-    var displaySize: DisplaySize
+    var displaySize: ArticleSize
 ) : Parcelable {
     constructor() : this(
+        "",
         "",
         "",
         "",
@@ -25,8 +28,7 @@ data class ArticlePresentationEntity(
         "",
         "",
         "",
-        DisplaySize.Large
+        ArticleSize.Large
     )
 }
 
-enum class DisplaySize { Large, Small }

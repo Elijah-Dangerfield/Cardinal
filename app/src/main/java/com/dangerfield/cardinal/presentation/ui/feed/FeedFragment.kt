@@ -11,9 +11,8 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.dangerfield.cardinal.R
 import com.dangerfield.cardinal.databinding.FragmentFeedBinding
+import com.dangerfield.cardinal.domain.model.ArticleSize
 import com.dangerfield.cardinal.domain.util.GenericError
-import com.dangerfield.cardinal.presentation.model.ArticlePresentationEntity
-import com.dangerfield.cardinal.presentation.model.DisplaySize
 import com.dangerfield.cardinal.presentation.util.smoothScrollToPositionWithSpeed
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.GroupieViewHolder
@@ -43,9 +42,7 @@ class FeedFragment : Fragment() {
     }
 
     private fun setupObservers() {
-        viewModel.feed.observe(viewLifecycleOwner, {
-            updateFeed(it.first, it.second)
-        })
+        viewModel.feed.observe(viewLifecycleOwner, { updateFeed(it) })
         viewModel.feedLoading.observe(viewLifecycleOwner, this::showFeedLoading)
         viewModel.feedError.observe(viewLifecycleOwner, this::handleError)
     }
@@ -95,16 +92,19 @@ class FeedFragment : Fragment() {
         binding.swipeRefreshLayout.setOnRefreshListener { viewModel.getFeed(forceRefresh = true) }
     }
 
-    private fun updateFeed(articles: List<ArticlePresentationEntity>, shouldAnimateChange: Boolean) {
-        val views = articles.map {
-            when(it.displaySize) {
-                DisplaySize.Large -> FeedArticleItemLarge(it)
-                DisplaySize.Small -> FeedArticleItemSmall(it)
+    private fun updateFeed(feedUpdate: FeedViewModel.FeedUpdate) {
+        val views = feedUpdate.articles.map {
+            when (it.displaySize) {
+                ArticleSize.Large -> FeedArticleItemLarge(it)
+                ArticleSize.Small -> FeedArticleItemSmall(it)
             }
         }
-        groupAdapter.update(views)
-        if(shouldAnimateChange) {
-            binding.articlesRecyclerView.scheduleLayoutAnimation()
+
+        if(views.isNotEmpty()) {
+            groupAdapter.update(views)
+            if (feedUpdate.shouldAnimate) {
+                binding.articlesRecyclerView.scheduleLayoutAnimation()
+            }
         }
     }
 
