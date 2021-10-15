@@ -4,12 +4,13 @@ import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
+import com.dangerfield.cardinal.data.cache.model.ArticleSizeCacheEntity
 import com.dangerfield.cardinal.data.cache.model.FeedItemCacheEntity
 import com.dangerfield.cardinal.data.cache.model.OpenedArticleCacheEntity
 import com.dangerfield.cardinal.data.cache.model.SearchedTermCacheEntity
 
 @Database(
-    entities = [FeedItemCacheEntity::class, OpenedArticleCacheEntity::class, SearchedTermCacheEntity::class], version = 1, exportSchema = false
+    entities = [FeedItemCacheEntity::class, OpenedArticleCacheEntity::class, SearchedTermCacheEntity::class, ArticleSizeCacheEntity::class], version = 2, exportSchema = false
 )
 abstract class CardinalDatabase : RoomDatabase() {
 

@@ -1,5 +1,6 @@
 package com.dangerfield.cardinal.domain.usecase
 
+import android.util.Log
 import com.dangerfield.cardinal.domain.cache.CacheCallWrapper
 import com.dangerfield.cardinal.domain.model.Article
 import com.dangerfield.cardinal.domain.network.NetworkCallWrapper
@@ -31,12 +32,15 @@ class GetFeed(
     private val requestKey = "FEED_REQUEST"
     private val requestTimeout = 3000L
 
-    fun invoke(): Flow<Resource<List<Article>, GenericError>> =
+    fun invoke(forceRefresh: Boolean): Flow<Resource<List<Article>, GenericError>> =
         flow {
             val cachedFeed = getCachedFeed()
-            if (shouldFetchNewFeed(cachedFeed)) {
-                val loading: Resource<List<Article>, GenericError> = Resource.Loading(cachedFeed)
-                emit(loading)
+            if (shouldFetchNewFeed(cachedFeed) || forceRefresh) {
+                // force refreshes only happen from swipe to refresh, we dont need to dispatch loading
+                if(!forceRefresh) {
+                    val loading: Resource<List<Article>, GenericError> = Resource.Loading(cachedFeed)
+                    emit(loading)
+                }
 
                 val result: Flow<Resource<List<Article>, GenericError>> =
                     when (val networkResult = fetchNewFeed()) {

@@ -6,7 +6,7 @@ import androidx.room.PrimaryKey
 
 @Entity(tableName = "OPENED_ARTICLE")
 data class OpenedArticleCacheEntity(
-    @PrimaryKey(autoGenerate = true) var id: Long?,
+    @PrimaryKey var id: String,
     @ColumnInfo(name="author")  var author: String?,
     @ColumnInfo(name="content") var content: String? = "",
     @ColumnInfo(name="description") var description: String? = "",

@@ -6,7 +6,7 @@ import androidx.room.PrimaryKey
 
 @Entity(tableName = "FEED_ARTICLE")
 data class FeedItemCacheEntity(
-    @PrimaryKey(autoGenerate = true) var id: Long?,
+    @PrimaryKey(autoGenerate = false) var id: String,
     @ColumnInfo(name="author")  var author: String?,
     @ColumnInfo(name="content") var content: String? = "",
     @ColumnInfo(name="description") var description: String? = "",
@@ -16,5 +16,6 @@ data class FeedItemCacheEntity(
     @ColumnInfo(name="title") var title: String? = "",
     @ColumnInfo(name="url") var url: String? = "",
     @ColumnInfo(name="urlToImage") var urlToImage: String? = "",
-) {
+    @ColumnInfo(name="displaySize") var displaySize: String? = "",
+    ) {
 }

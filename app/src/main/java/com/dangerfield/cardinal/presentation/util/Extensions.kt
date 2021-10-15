@@ -13,6 +13,8 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.ConstraintSet
 import androidx.recyclerview.widget.RecyclerView
 import com.dangerfield.cardinal.domain.model.Article
+import kotlinx.coroutines.async
+import kotlinx.coroutines.coroutineScope
 import java.text.ParseException
 import java.text.SimpleDateFormat
 import java.util.*
@@ -124,5 +126,9 @@ fun Article.getReadableDate(): String {
         e.printStackTrace()
     }
     return date.toString().dropLast(18)
+}
+
+suspend fun <A, B> Iterable<A>.pmap(f: suspend (A) -> B): List<B> = coroutineScope {
+    map { async { f(it) } }.map { it.await() }
 }
 

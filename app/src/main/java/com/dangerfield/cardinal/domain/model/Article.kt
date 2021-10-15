@@ -5,6 +5,7 @@ import kotlinx.parcelize.Parcelize
 
 @Parcelize
 data class Article(
+    val id: String,
     val author: String?,
     val content: String?,
     val description: String?,
@@ -15,6 +16,7 @@ data class Article(
     val urlToImage: String?
 ) : Parcelable {
     constructor(): this(
+        "",
         "",
         "",
         "",
