@@ -124,6 +124,7 @@ class GetFeedTest {
     }
 
     private fun articleWithTitle(title: String) = Article(
+        "1j4jsj5j6d8dfg09vj348vhdfsk2jn239v8",
         "Author",
         "Content",
         "THis is a description",
